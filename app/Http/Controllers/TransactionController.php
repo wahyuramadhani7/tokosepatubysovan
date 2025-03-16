@@ -60,44 +60,6 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
-    public function manualAdd(Request $request)
-    {
-        $shoeId = $request->input('shoe_id');
-        Log::info('Attempting to manually add product with ID: ' . $shoeId);
-
-        $shoe = Shoe::find($shoeId);
-
-        if (!$shoe) {
-            Log::error('Product not found for ID: ' . $shoeId);
-            return redirect()->back()->with('error', 'Produk tidak ditemukan!');
-        }
-
-        if ($shoe->stock <= 0) {
-            Log::error('Product out of stock for ID: ' . $shoeId);
-            return redirect()->back()->with('error', 'Stok produk habis!');
-        }
-
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$shoe->id])) {
-            $cart[$shoe->id]['quantity']++;
-            $cart[$shoe->id]['total'] = $cart[$shoe->id]['quantity'] * $shoe->price;
-        } else {
-            $cart[$shoe->id] = [
-                'barcode' => $shoe->barcode,
-                'name' => $shoe->name,
-                'price' => $shoe->price,
-                'quantity' => 1,
-                'total' => $shoe->price,
-            ];
-        }
-
-        session()->put('cart', $cart);
-        Log::info('Product manually added to cart: ' . json_encode($cart[$shoe->id]));
-
-        return redirect()->route('transactions.index')->with('success', 'Produk ditambahkan ke keranjang!');
-    }
-
     public function checkout(Request $request)
     {
         $cart = session()->get('cart', []);

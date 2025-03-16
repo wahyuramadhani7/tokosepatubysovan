@@ -61,7 +61,7 @@
                     <!-- Tombol -->
                     <div class="d-flex justify-content-between mt-3">
                         <a href="{{ route('transactions.cancel') }}" class="btn btn-danger">Batal</a>
-                        <button class="btn btn-warning" data-toggle="modal" data-target="#manualAddModal">Tambah Manual</button>
+                        <!-- Tombol Tambah Manual dihapus -->
                     </div>
                 </div>
             </div>
@@ -105,35 +105,6 @@
                             <input type="text" class="form-control" value="Rp {{ number_format(max(0, ($total > 0 ? (request()->input('amount_paid', 0) - $total) : 0)), 0, ',', '.') }}" readonly>
                         </div>
                         <button type="submit" class="btn btn-success btn-block">Bayar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Manual -->
-    <div class="modal fade" id="manualAddModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Produk Manual</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('transactions.manual-add') }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label>Pilih Produk</label>
-                            <select name="shoe_id" class="form-control" required>
-                                <option value="">Pilih Produk</option>
-                                @foreach(\App\Models\Shoe::all() as $shoe)
-                                    <option value="{{ $shoe->id }}">{{ $shoe->name }} ({{ $shoe->size }}) - Rp {{ number_format($shoe->price, 0, ',', '.') }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Tambah</button>
                     </form>
                 </div>
             </div>

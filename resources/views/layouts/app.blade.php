@@ -6,91 +6,61 @@
     <title>Toko Sepatu By Sovan - @yield('title')</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Chart.js (untuk grafik) -->
+    <!-- Chart.js (untuk grafik jika diperlukan di halaman lain) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            background-image: url('/images/bckgr2.png'); /* Ganti dengan path gambar garis */
+            background-size: cover;
+            background-position: top center;
+            background-repeat: repeat-y; /* Ulangi secara vertikal */
+            background-attachment: fixed; /* Agar background tetap */
+            color: #ffffff; /* Warna teks default putih untuk kontras */
+            margin: 0; /* Hapus margin bawaan body */
+            padding: 0; /* Hapus padding bawaan body */
         }
         .navbar {
-            background-color: #007bff; /* Sesuaikan dengan header */
-            padding: 10px 20px;
-            border-bottom: 2px solid #0056b3; /* Garis biru lebih gelap untuk kontras */
+            background-color: #1E1E1E; /* Warna abu-abu gelap */
+            padding: 10px 20px; /* Padding minimal */
+            border-bottom: none; /* Hapus garis oranye */
+            margin-bottom: 0; /* Hapus margin bawah navbar */
+        }
+        .navbar-brand {
+            color: #ffffff !important; /* Teks putih */
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-right: 20px; /* Jarak dari menu */
         }
         .navbar-brand img {
-            width: 30px;
+            width: 30px; /* Ukuran ikon/logo */
             height: 30px;
             margin-right: 10px;
+            vertical-align: middle; /* Align dengan teks */
         }
         .navbar-nav .nav-link {
-            color: #fff !important;
-            margin-left: 15px;
+            color: #ffffff !important; /* Teks menu putih */
+            margin-left: 15px; /* Jarak antar menu */
             font-weight: 500;
+            text-transform: uppercase; /* Huruf kapital seperti di gambar */
         }
         .navbar-nav .nav-link.active {
-            color: #fff;
-            background-color: #0056b3; /* Highlight active link */
-            border-radius: 5px;
+            color: #ff6f61 !important; /* Warna oranye untuk link aktif */
         }
-        .header-card {
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 0;
-            margin-bottom: 20px;
-            padding: 20px;
-            border-bottom: 2px solid #0056b3; /* Konsisten dengan navbar */
+        .navbar-nav .nav-link:hover {
+            color: #ff6f61 !important; /* Efek hover oranye */
         }
-        .stat-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .stat-card h5 {
-            font-size: 1.2rem;
-            color: #6c757d;
-        }
-        .stat-card h3 {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .stat-card p {
-            font-size: 0.9rem;
-            color: #28a745;
-        }
-        .stat-card p.down {
-            color: #dc3545;
-        }
-        .content-section {
-            margin-top: 20px;
-            margin-bottom: 40px;
-        }
-        .table th, .table td {
-            vertical-align: middle;
-        }
-        .badge-success {
-            background-color: #28a745;
-        }
-        .badge-warning {
-            background-color: #ffc107;
-        }
-        .badge-danger {
-            background-color: #dc3545;
+        .container {
+            padding-top: 0; /* Hapus padding atas konten */
         }
     </style>
+    @yield('styles')
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <img src="/images/logotokosepatu.jpg" alt="Logo" class="rounded-circle me-2">
+                <img src="/images/logotokosepatu.jpg" alt="Logo" class="rounded-circle">
                 TOKO SEPATU BY SOVAN
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,10 +75,7 @@
                         <a class="nav-link {{ Request::is('shoes*') ? 'active' : '' }}" href="{{ route('shoes.index') }}">Inventory</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('transactions*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">Penjualan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pengunjung</a>
+                        <a class="nav-link {{ Request::is('transactions*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">Transaksi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Laporan</a>
@@ -118,20 +85,13 @@
         </div>
     </nav>
 
-    <!-- Header -->
-    <div class="container">
-        <div class="header-card">
-            <h4>Selamat Datang, Admin</h4>
-            <p>Ringkasan aktivitas toko sepatu hari ini, {{ now()->format('l, d F Y') }}</p>
-        </div>
-    </div>
-
     <!-- Konten Utama -->
-    <div class="container content-section">
+    <div class="container">
         @yield('content')
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 </html>

@@ -22,6 +22,5 @@ Route::get('/shoes/barcode/{id}', [ShoeController::class, 'showBarcode'])->name(
 // Rute untuk penjualan/kasir
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 Route::post('/transactions/add-to-cart', [TransactionController::class, 'addToCart'])->name('transactions.add-to-cart');
-Route::post('/transactions/manual-add', [TransactionController::class, 'manualAdd'])->name('transactions.manual-add');
 Route::post('/transactions/checkout', [TransactionController::class, 'checkout'])->name('transactions.checkout');
 Route::post('/transactions/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
