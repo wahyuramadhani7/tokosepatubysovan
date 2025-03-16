@@ -10,9 +10,9 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('transaction_id')->unique(); // Pastikan kolom ini ada
+            $table->string('transaction_id')->unique();
             $table->decimal('subtotal', 10, 2);
-            $table->decimal('ppn', 10, 2);
+            // Hapus kolom ppn
             $table->decimal('total', 10, 2);
             $table->string('customer_name')->nullable();
             $table->string('customer_phone')->nullable();

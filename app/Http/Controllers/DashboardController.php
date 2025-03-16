@@ -26,9 +26,9 @@ class DashboardController extends Controller
 
         // Total Stok
         $totalStock = Shoe::sum('stock') ?: 0;
-        $stockChange = 0; // Placeholder
+        $stockChange = 0;
 
-        // Grafik Penjualan Mingguan (7 hari terakhir)
+        // Grafik Penjualan Mingguan
         $weeklySales = [];
         $weeklyTarget = [];
         $labels = [];
@@ -39,15 +39,15 @@ class DashboardController extends Controller
             $weeklySales[] = $sales;
             $weeklyTarget[] = 1500000;
         }
-
-        // Pastikan data grafik tidak kosong
-        if (empty($weeklySales) || !is_array($weeklySales)) {
+        // Pastikan data tidak kosong
+        if (empty(array_filter($weeklySales)) || empty($labels)) {
+            Log::warning('Data grafik penjualan kosong, menggunakan dummy data.');
             $weeklySales = [1000000, 1500000, 2000000, 2500000, 2200000, 1800000, 3000000];
             $weeklyTarget = [1500000, 1500000, 1500000, 1500000, 1500000, 1500000, 1500000];
             $labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
         }
 
-        // Produk Terlaris (untuk pie chart)
+        // Produk Terlaris
         $topProducts = TransactionItem::selectRaw('barcode, SUM(quantity) as total')
             ->groupBy('barcode')
             ->orderBy('total', 'desc')
@@ -62,9 +62,9 @@ class DashboardController extends Controller
             });
         $topProductLabels = $topProducts->pluck('name')->toArray();
         $topProductData = $topProducts->pluck('total')->toArray();
-
-        // Pastikan data produk terlaris tidak kosong
-        if (empty($topProductLabels) || empty($topProductData)) {
+        // Pastikan data tidak kosong
+        if (empty(array_filter($topProductData)) || empty($topProductLabels)) {
+            Log::warning('Data produk terlaris kosong, menggunakan dummy data.');
             $topProductLabels = ['Nike Air Max', 'Adidas Ultraboost', 'Puma RS-X', 'Converse', 'Nike Air Jordan'];
             $topProductData = [30, 25, 20, 15, 10];
         }

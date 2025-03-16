@@ -13,11 +13,9 @@ class TransactionController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        $subtotal = collect($cart)->sum('total');
-        $ppn = $subtotal * 0.11; // PPN 11%
-        $total = $subtotal + $ppn;
+        $total = collect($cart)->sum('total'); // Hanya total, tanpa ppn
 
-        return view('transactions.index', compact('cart', 'subtotal', 'ppn', 'total'));
+        return view('transactions.index', compact('cart', 'total')); // Hapus subtotal dan ppn
     }
 
     public function addToCart(Request $request)
@@ -98,9 +96,7 @@ class TransactionController extends Controller
             'amount_paid' => 'required|numeric|min:0',
         ]);
 
-        $subtotal = collect($cart)->sum('total');
-        $ppn = $subtotal * 0.11; // PPN 11%
-        $total = $subtotal + $ppn;
+        $total = collect($cart)->sum('total'); // Hanya total, tanpa ppn
 
         if ($request->amount_paid < $total) {
             return redirect()->back()->with('error', 'Jumlah pembayaran kurang dari total!');
@@ -111,8 +107,7 @@ class TransactionController extends Controller
             $transactionId = 'TRX-' . now()->format('Ymd') . '-' . str_pad(Transaction::count() + 1, 3, '0', STR_PAD_LEFT);
             $transaction = Transaction::create([
                 'transaction_id' => $transactionId,
-                'subtotal' => $subtotal,
-                'ppn' => $ppn,
+                'subtotal' => $total, // Subtotal sama dengan total karena tidak ada ppn
                 'total' => $total,
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,

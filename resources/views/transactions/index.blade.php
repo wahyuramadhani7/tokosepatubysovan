@@ -63,10 +63,8 @@
                         </tbody>
                     </table>
 
-                    <!-- Subtotal dan Total -->
+                    <!-- Total -->
                     <div class="text-end">
-                        <p><strong>Subtotal:</strong> Rp {{ number_format($subtotal, 0, ',', '.') }}</p>
-                        <p><strong>PPN (11%):</strong> Rp {{ number_format($ppn, 0, ',', '.') }}</p>
                         <p><strong>TOTAL:</strong> Rp {{ number_format($total, 0, ',', '.') }}</p>
                     </div>
 

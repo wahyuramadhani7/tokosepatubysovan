@@ -115,53 +115,57 @@
                 return;
             }
 
-            // Grafik Penjualan Mingguan
-            const weeklySalesChart = new Chart(weeklySalesCanvas, {
-                type: 'line',
-                data: {
-                    labels: @json($labels),
-                    datasets: [{
-                        label: 'Penjualan',
-                        data: @json($weeklySales),
-                        borderColor: 'green',
-                        fill: false
-                    }, {
-                        label: 'Target',
-                        data: @json($weeklyTarget),
-                        borderColor: 'blue',
-                        borderDash: [5, 5],
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + value.toLocaleString('id-ID');
+            try {
+                // Grafik Penjualan Mingguan
+                const weeklySalesChart = new Chart(weeklySalesCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: @json($labels),
+                        datasets: [{
+                            label: 'Penjualan',
+                            data: @json($weeklySales),
+                            borderColor: 'green',
+                            fill: false
+                        }, {
+                            label: 'Target',
+                            data: @json($weeklyTarget),
+                            borderColor: 'blue',
+                            borderDash: [5, 5],
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + value.toLocaleString('id-ID');
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
 
-            // Pie Chart Produk Terlaris
-            const topProductsChart = new Chart(topProductsCanvas, {
-                type: 'pie',
-                data: {
-                    labels: @json($topProductLabels),
-                    datasets: [{
-                        data: @json($topProductData),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
-                    }]
-                }
-            });
+                // Pie Chart Produk Terlaris
+                const topProductsChart = new Chart(topProductsCanvas, {
+                    type: 'pie',
+                    data: {
+                        labels: @json($topProductLabels),
+                        datasets: [{
+                            data: @json($topProductData),
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                        }]
+                    }
+                });
 
-            // Debugging: Periksa apakah chart berhasil dibuat
-            console.log('Weekly Sales Chart:', weeklySalesChart);
-            console.log('Top Products Chart:', topProductsChart);
+                // Debugging: Periksa apakah chart berhasil dibuat
+                console.log('Weekly Sales Chart:', weeklySalesChart);
+                console.log('Top Products Chart:', topProductsChart);
+            } catch (error) {
+                console.error('Error creating charts:', error);
+            }
         });
     </script>
 @endsection

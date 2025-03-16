@@ -11,8 +11,7 @@ class Transaction extends Model
     protected $fillable = [
         'transaction_id',
         'subtotal',
-        'ppn',
-        'total',
+        'total', // Hapus ppn
         'customer_name',
         'customer_phone',
         'payment_method',
