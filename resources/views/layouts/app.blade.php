@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShoeShop - @yield('title')</title>
+    <title>Toko Sepatu By Sovan - @yield('title')</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Chart.js (untuk grafik) -->
@@ -90,8 +90,8 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <img src="https://via.placeholder.com/30" alt="Logo" class="rounded-circle me-2">
-                SHOESHOP
+                <img src="/images/logotokosepatu.jpg" alt="Logo" class="rounded-circle me-2">
+                TOKO SEPATU BY SOVAN
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
