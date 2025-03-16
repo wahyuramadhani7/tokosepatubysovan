@@ -7,27 +7,35 @@ use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
     public function index()
     {
         $cart = session()->get('cart', []);
-        $total = collect($cart)->sum('total'); // Hanya total, tanpa ppn
+        $total = collect($cart)->sum('total');
 
-        return view('transactions.index', compact('cart', 'total')); // Hapus subtotal dan ppn
+        Log::info('Cart Data on Index: ' . json_encode($cart));
+        Log::info('Total on Index: ' . $total);
+
+        return view('transactions.index', compact('cart', 'total'));
     }
 
     public function addToCart(Request $request)
     {
         $barcode = $request->input('barcode');
+        Log::info('Attempting to add product with barcode: ' . $barcode);
+
         $shoe = Shoe::where('barcode', $barcode)->first();
 
         if (!$shoe) {
-            return redirect()->back()->with('error', 'Produk tidak ditemukan!');
+            Log::error('Product not found for barcode: ' . $barcode);
+            return redirect()->back()->with('error', 'Produk tidak ditemukan! Pastikan barcode benar.');
         }
 
         if ($shoe->stock <= 0) {
+            Log::error('Product out of stock for barcode: ' . $barcode);
             return redirect()->back()->with('error', 'Stok produk habis!');
         }
 
@@ -47,19 +55,25 @@ class TransactionController extends Controller
         }
 
         session()->put('cart', $cart);
+        Log::info('Product added to cart: ' . json_encode($cart[$shoe->id]));
+
         return redirect()->route('transactions.index')->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
     public function manualAdd(Request $request)
     {
         $shoeId = $request->input('shoe_id');
+        Log::info('Attempting to manually add product with ID: ' . $shoeId);
+
         $shoe = Shoe::find($shoeId);
 
         if (!$shoe) {
+            Log::error('Product not found for ID: ' . $shoeId);
             return redirect()->back()->with('error', 'Produk tidak ditemukan!');
         }
 
         if ($shoe->stock <= 0) {
+            Log::error('Product out of stock for ID: ' . $shoeId);
             return redirect()->back()->with('error', 'Stok produk habis!');
         }
 
@@ -79,6 +93,8 @@ class TransactionController extends Controller
         }
 
         session()->put('cart', $cart);
+        Log::info('Product manually added to cart: ' . json_encode($cart[$shoe->id]));
+
         return redirect()->route('transactions.index')->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
@@ -96,7 +112,7 @@ class TransactionController extends Controller
             'amount_paid' => 'required|numeric|min:0',
         ]);
 
-        $total = collect($cart)->sum('total'); // Hanya total, tanpa ppn
+        $total = collect($cart)->sum('total');
 
         if ($request->amount_paid < $total) {
             return redirect()->back()->with('error', 'Jumlah pembayaran kurang dari total!');
@@ -107,7 +123,7 @@ class TransactionController extends Controller
             $transactionId = 'TRX-' . now()->format('Ymd') . '-' . str_pad(Transaction::count() + 1, 3, '0', STR_PAD_LEFT);
             $transaction = Transaction::create([
                 'transaction_id' => $transactionId,
-                'subtotal' => $total, // Subtotal sama dengan total karena tidak ada ppn
+                'subtotal' => $total,
                 'total' => $total,
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
