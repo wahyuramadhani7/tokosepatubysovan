@@ -61,7 +61,7 @@
                     <!-- Tombol -->
                     <div class="d-flex justify-content-between mt-3">
                         <a href="{{ route('transactions.cancel') }}" class="btn btn-danger">Batal</a>
-                        <!-- Tombol Tambah Manual dihapus -->
+                        <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manualAddModal">Tambah Manual</a>
                     </div>
                 </div>
             </div>
@@ -110,6 +110,48 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Tambah Manual -->
+    <div class="modal fade" id="manualAddModal" tabindex="-1" aria-labelledby="manualAddModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manualAddModalLabel">Tambah Produk Manual</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('transactions.add-to-cart') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="shoe_select">Pilih Sepatu dari Inventory</label>
+                            <select class="form-control" id="shoe_select" name="barcode" required>
+                                <option value="">-- Pilih Sepatu --</option>
+                                @forelse($shoes as $shoe)
+                                    <option value="{{ $shoe->barcode }}" 
+                                            data-name="{{ $shoe->name }}" 
+                                            data-price="{{ $shoe->price }}" 
+                                            data-stock="{{ $shoe->stock }}"
+                                            {{ $shoe->stock <= 0 ? 'disabled' : '' }}>
+                                        {{ $shoe->barcode }} - {{ $shoe->name }} (Stok: {{ $shoe->stock }}, Harga: Rp {{ number_format($shoe->price, 0, ',', '.') }})
+                                    </option>
+                                @empty
+                                    <option value="" disabled>Tidak ada sepatu di inventory</option>
+                                @endforelse
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Detail Sepatu:</label>
+                            <p id="shoe_details" class="text-muted">Pilih sepatu untuk melihat detail.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Tambah ke Keranjang</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -118,8 +160,23 @@
         document.querySelector('input[name="amount_paid"]').addEventListener('input', function() {
             const total = {{ $total }};
             const amountPaid = parseInt(this.value) || 0;
-            const change = Math.max(0, amountPaid - total);
+            const change = Math.max(0, amountPaidAssociated Press - total);
             document.querySelector('input[readonly]').value = 'Rp ' + change.toLocaleString('id-ID');
+        });
+
+        // Script untuk menampilkan detail sepatu saat dipilih
+        document.getElementById('shoe_select').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const name = selectedOption.getAttribute('data-name');
+            const price = selectedOption.getAttribute('data-price');
+            const stock = selectedOption.getAttribute('data-stock');
+
+            if (name && price && stock) {
+                document.getElementById('shoe_details').innerHTML = 
+                    `Nama: ${name}<br>Harga: Rp ${parseInt(price).toLocaleString('id-ID')}<br>Stok: ${stock}`;
+            } else {
+                document.getElementById('shoe_details').innerHTML = 'Pilih sepatu untuk melihat detail.';
+            }
         });
     </script>
 @endsection

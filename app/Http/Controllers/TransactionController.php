@@ -15,11 +15,12 @@ class TransactionController extends Controller
     {
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum('total');
+        $shoes = Shoe::all(); // Ambil semua data sepatu dari inventory untuk modal "Tambah Manual"
 
         Log::info('Cart Data on Index: ' . json_encode($cart));
         Log::info('Total on Index: ' . $total);
 
-        return view('transactions.index', compact('cart', 'total'));
+        return view('transactions.index', compact('cart', 'total', 'shoes'));
     }
 
     public function addToCart(Request $request)
