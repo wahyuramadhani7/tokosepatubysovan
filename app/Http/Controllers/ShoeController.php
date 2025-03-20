@@ -13,12 +13,13 @@ class ShoeController extends Controller
     {
         $shoes = Shoe::paginate(10); // Pagination, 10 item per halaman
         
-        // Debugging: Log data yang diambil dari database
         Log::info('Data sepatu di index: ', $shoes->toArray());
 
         foreach ($shoes as $shoe) {
-            // Pastikan barcode ada sebelum generate QR Code
-            $shoe->qrCode = QrCode::size(100)->generate($shoe->barcode ?? 'N/A');
+            // QR code mengarah ke detail sepatu
+            $shoe->qrCode = QrCode::size(100)->generate(
+                route('shoes.qr-detail', $shoe->barcode)
+            );
         }
         return view('shoes.index', compact('shoes'));
     }
@@ -38,7 +39,6 @@ class ShoeController extends Controller
                 'stock' => 'required|integer|min:0',
             ]);
 
-            // Generate barcode unik
             do {
                 $barcode = 'SHOE' . rand(10000, 99999);
                 $exists = Shoe::where('barcode', $barcode)->exists();
@@ -46,18 +46,12 @@ class ShoeController extends Controller
 
             $data['barcode'] = $barcode;
 
-            // Log data sebelum disimpan untuk debugging
             Log::info('Menyimpan data sepatu: ', $data);
-
-            // Simpan ke database dan ambil instance yang baru dibuat
             $shoe = Shoe::create($data);
-
-            // Debugging: Log data setelah disimpan
             Log::info('Data sepatu setelah disimpan: ', $shoe->toArray());
 
             return redirect()->route('shoes.index')->with('success', 'Sepatu ditambahkan! Barcode: ' . $barcode);
         } catch (\Exception $e) {
-            // Log error untuk debugging
             Log::error('Gagal menyimpan sepatu: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal menyimpan sepatu: ' . $e->getMessage())->withInput();
         }
@@ -79,8 +73,6 @@ class ShoeController extends Controller
             ]);
 
             $shoe->update($data);
-
-            // Debugging: Log data setelah diperbarui
             Log::info('Data sepatu setelah diperbarui: ', $shoe->toArray());
 
             return redirect()->route('shoes.index')->with('success', 'Data sepatu berhasil diperbarui!');
@@ -103,10 +95,11 @@ class ShoeController extends Controller
 
     public function printBarcode(Shoe $shoe)
     {
-        // Debugging: Log data sepatu untuk cetak barcode
         Log::info('Data sepatu untuk cetak barcode: ', $shoe->toArray());
-
-        $qrCode = QrCode::size(150)->generate($shoe->barcode ?? 'N/A');
+        
+        $qrCode = QrCode::size(150)->generate(
+            route('shoes.qr-detail', $shoe->barcode)
+        );
         return view('shoes.print-barcode', compact('shoe', 'qrCode'));
     }
 
@@ -119,9 +112,19 @@ class ShoeController extends Controller
             return redirect()->back()->with('error', 'Barcode tidak ditemukan!');
         }
 
-        // Debugging: Log data sepatu yang ditemukan
         Log::info('Data sepatu dari scan barcode: ', $shoe->toArray());
-
         return view('shoes.scan-result', compact('shoe'));
+    }
+
+    public function showFromBarcode($barcode)
+    {
+        try {
+            $shoe = Shoe::where('barcode', $barcode)->firstOrFail();
+            Log::info('Menampilkan detail sepatu dari QR code: ', $shoe->toArray());
+            return view('shoes.qr-detail', compact('shoe'));
+        } catch (\Exception $e) {
+            Log::error('Gagal menampilkan detail sepatu: ' . $e->getMessage());
+            return redirect('/')->with('error', 'Sepatu tidak ditemukan!');
+        }
     }
 }

@@ -4,7 +4,7 @@
 
 @section('content')
 <style>
-    /* Styling untuk header navigasi */
+    /* Base styling */
     .navbar {
         background-color: #1a2526;
     }
@@ -13,7 +13,6 @@
         font-weight: 500;
     }
 
-    /* Styling untuk judul utama */
     h2 {
         font-size: 24px;
         font-weight: bold;
@@ -22,7 +21,7 @@
         margin-top: 40px;
     }
 
-    /* Styling untuk judul bagian */
+    /* Section title styling */
     .section-title {
         font-size: 18px;
         font-weight: bold;
@@ -43,13 +42,14 @@
         background-color: #007bff;
     }
 
-    /* Styling untuk kartu statistik */
+    /* Stat card styling */
     .stat-card {
         background-color: #fff5e6;
         border: 1px solid #e0e0e0;
         border-radius: 8px;
         padding: 20px;
         text-align: center;
+        margin-bottom: 15px; /* Added for mobile spacing */
     }
     .stat-card img {
         width: 40px;
@@ -69,15 +69,17 @@
         margin: 5px 0 0;
     }
 
-    /* Styling untuk filter dan pencarian */
+    /* Search bar styling */
     .search-bar {
         position: relative;
+        margin-bottom: 15px; /* Added for mobile spacing */
     }
     .search-bar input {
         padding-left: 35px;
         border: 1px solid #ccc;
         border-radius: 5px;
         background-color: #f5f5f5;
+        width: 100%;
     }
     .search-bar::before {
         content: url('https://img.icons8.com/ios-filled/20/000000/search.png');
@@ -87,12 +89,16 @@
         transform: translateY(-50%);
     }
 
-    /* Styling untuk tombol aksi */
+    /* Button styling */
+    .action-buttons {
+        margin-bottom: 15px; /* Added for mobile spacing */
+    }
     .btn-tambah {
         background-color: #ffffff;
         border: 1px solid #ccc;
         color: #333;
         border-radius: 5px;
+        margin-bottom: 5px; /* For stacked mobile buttons */
     }
     .btn-tambah:hover {
         background-color: #f0f0f0;
@@ -104,6 +110,7 @@
         border: 1px solid #ccc;
         color: #333;
         border-radius: 5px;
+        margin-bottom: 5px; /* For stacked mobile buttons */
     }
     .btn-history:hover {
         background-color: #c0c0c0;
@@ -125,11 +132,15 @@
         border-color: #e07b30;
     }
 
-    /* Styling untuk tabel */
+    /* Table styling */
+    .table-responsive {
+        overflow-x: auto;
+    }
     .table thead th {
         background-color: #f28c38;
         color: white;
         border: none;
+        white-space: nowrap;
     }
     .table tbody tr:nth-child(odd) {
         background-color: #f8f9fa;
@@ -143,16 +154,79 @@
     .table-bordered th,
     .table-bordered td {
         border: 1px solid #e0e0e0;
+        vertical-align: middle;
     }
 
-    /* Styling untuk QR Code */
+    /* Action buttons in table */
+    .table-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    /* QR Code styling */
     .qr-code img {
-        max-width: 100px;
+        max-width: 80px;
         height: auto;
+    }
+
+    /* Card styling */
+    .info-card, .data-card {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #1a2526;
+    }
+
+    /* Badge styling */
+    .stock-badge {
+        padding: 5px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .badge-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+        h2 {
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .btn-tambah, .btn-history {
+            width: 48%;
+        }
+        
+        .table-actions .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .pagination {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     }
 </style>
 
-<!-- Notifikasi Sukses -->
+<!-- Notifikasi -->
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -160,7 +234,6 @@
     </div>
 @endif
 
-<!-- Notifikasi Error -->
 @if (session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ session('error') }}
@@ -168,106 +241,118 @@
     </div>
 @endif
 
-<h2>MANAJEMEN INVENTORY</h2>
+<div class="container-fluid px-2 px-md-4">
+    <h2>MANAJEMEN INVENTORY</h2>
 
-<!-- Statistik -->
-<div class="row mb-4" style="background-color: #1a2526; padding: 20px; border-radius: 8px;">
-    <div class="col-12">
-        <div class="section-title" style="color: white;">INVENTORY INFORMATION</div>
-    </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <img src="https://img.icons8.com/ios-filled/40/f28c38/sneaker.png" alt="Total Produk">
-            <h5>Total Produk</h5>
-            <h3>{{ $shoes->count() }}</h3>
+    <!-- Statistik -->
+    <div class="info-card">
+        <div class="col-12">
+            <div class="section-title" style="color: white;">INVENTORY INFORMATION</div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="stat-card">
+                    <img src="https://img.icons8.com/ios-filled/40/f28c38/sneaker.png" alt="Total Produk">
+                    <h5>Total Produk</h5>
+                    <h3>{{ $shoes->count() }}</h3>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-card" style="border: 2px solid #007bff;">
+                    <img src="https://img.icons8.com/ios-filled/40/f28c38/box.png" alt="Stok Menipis">
+                    <h5>Stok Menipis</h5>
+                    <h3>{{ $shoes->where('stock', '<=', 5)->count() }}</h3>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-card">
+                    <img src="https://img.icons8.com/ios-filled/40/f28c38/calculator.png" alt="Total Stok">
+                    <h5>Total Stok</h5>
+                    <h3>{{ $shoes->sum('stock') }}</h3>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="stat-card" style="border: 2px solid #007bff;">
-            <img src="https://img.icons8.com/ios-filled/40/f28c38/box.png" alt="Stok Menipis">
-            <h5>Stok Menipis</h5>
-            <h3>{{ $shoes->where('stock', '<=', 5)->count() }}</h3>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <img src="https://img.icons8.com/ios-filled/40/f28c38/calculator.png" alt="Total Stok">
-            <h5>Total Stok</h5>
-            <h3>{{ $shoes->sum('stock') }}</h3>
-        </div>
-    </div>
-</div>
 
-<!-- Filter, Tombol Aksi, dan Tabel Stok -->
-<div class="row" style="background-color: #1a2526; padding: 20px; border-radius: 8px;">
-    <div class="col-12">
-        <div class="row mb-3 align-items-center">
-            <div class="col-md-6">
+    <!-- Filter, Tombol, dan Tabel -->
+    <div class="data-card">
+        <div class="row">
+            <div class="col-12 col-md-6">
                 <div class="search-bar">
                     <input type="text" class="form-control" placeholder="Cari produk...">
                 </div>
             </div>
-            <div class="col-md-6 text-end">
-                <a href="{{ route('shoes.create') }}" class="btn btn-tambah me-2">
-                    <img src="https://img.icons8.com/ios-filled/16/000000/plus-math.png" alt="Tambah Icon" class="me-1"> Tambah
-                </a>
-                <button class="btn btn-history">Riwayat</button>
+            <div class="col-12 col-md-6">
+                <div class="action-buttons d-flex justify-content-md-end">
+                    <a href="{{ route('shoes.create') }}" class="btn btn-tambah me-2">
+                        <img src="https://img.icons8.com/ios-filled/16/000000/plus-math.png" alt="Tambah Icon" class="me-1"> Tambah
+                    </a>
+                    <button class="btn btn-history">Riwayat</button>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Barcode</th>
-                            <th>QR Code</th> <!-- Kolom baru untuk QR Code -->
-                            <th>Produk</th>
-                            <th>Kategori</th>
-                            <th>Ukuran</th>
-                            <th>Stok</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($shoes as $shoe)
+        
+        <div class="card mt-3">
+            <div class="card-body p-0 p-md-3">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
                             <tr>
-                                <td>{{ $shoe->barcode ?? 'BELUM TERSET' }}</td>
-                                <td class="qr-code">{!! $shoe->qrCode !!}</td> <!-- Tampilkan QR Code -->
-                                <td>{{ $shoe->name }}</td>
-                                <td>Sepatu {{ rand(0, 1) ? 'Lari' : 'Casual' }}</td>
-                                <td>{{ $shoe->size }}</td>
-                                <td>
-                                    @if($shoe->stock <= 5)
-                                        <span class="badge badge-danger">{{ $shoe->stock }}</span>
-                                    @elseif($shoe->stock >= 10)
-                                        <span class="badge badge-success">{{ $shoe->stock }}</span>
-                                    @else
-                                        <span class="badge badge-warning">{{ $shoe->stock }}</span>
-                                    @endif
-                                </td>
-                                <td>Rp {{ number_format($shoe->price * 0.7, 0, ',', '.') }}</td>
-                                <td>Rp {{ number_format($shoe->price, 0, ',', '.') }}</td>
-                                <td>
-                                    <a href="{{ route('shoes.edit', $shoe->id) }}" class="btn btn-sm btn-orange me-1">Edit</a>
-                                    <form action="{{ route('shoes.destroy', $shoe->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                    </form>
-                                </td>
+                                <th>Barcode</th>
+                                <th>QR Code</th>
+                                <th>Produk</th>
+                                <th>Kategori</th>
+                                <th>Ukuran</th>
+                                <th>Stok</th>
+                                <th>Harga Beli</th>
+                                <th>Harga Jual</th>
+                                <th>Aksi</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9" class="text-center">Belum ada data sepatu.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($shoes as $shoe)
+                                <tr>
+                                    <td>{{ $shoe->barcode ?? 'BELUM TERSET' }}</td>
+                                    <td class="qr-code">{!! $shoe->qrCode !!}</td>
+                                    <td>{{ $shoe->name }}</td>
+                                    <td>Sepatu {{ rand(0, 1) ? 'Lari' : 'Casual' }}</td>
+                                    <td>{{ $shoe->size }}</td>
+                                    <td>
+                                        @if($shoe->stock <= 5)
+                                            <span class="stock-badge badge-danger">{{ $shoe->stock }}</span>
+                                        @elseif($shoe->stock >= 10)
+                                            <span class="stock-badge badge-success">{{ $shoe->stock }}</span>
+                                        @else
+                                            <span class="stock-badge badge-warning">{{ $shoe->stock }}</span>
+                                        @endif
+                                    </td>
+                                    <td>Rp {{ number_format($shoe->price * 0.7, 0, ',', '.') }}</td>
+                                    <td>Rp {{ number_format($shoe->price, 0, ',', '.') }}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{{ route('shoes.edit', $shoe->id) }}" class="btn btn-sm btn-orange">Edit</a>
+                                            <form action="{{ route('shoes.destroy', $shoe->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">Belum ada data sepatu.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                
                 <!-- Pagination -->
-                <div class="d-flex justify-content-between">
-                    <span>{{ $shoes->links() }}</span>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+                    <div class="pagination-container">
+                        {{ $shoes->links() }}
+                    </div>
                 </div>
             </div>
         </div>
