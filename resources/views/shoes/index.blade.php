@@ -49,7 +49,7 @@
         border-radius: 8px;
         padding: 20px;
         text-align: center;
-        margin-bottom: 15px; /* Added for mobile spacing */
+        margin-bottom: 15px;
     }
     .stat-card img {
         width: 40px;
@@ -72,7 +72,7 @@
     /* Search bar styling */
     .search-bar {
         position: relative;
-        margin-bottom: 15px; /* Added for mobile spacing */
+        margin-bottom: 15px;
     }
     .search-bar input {
         padding-left: 35px;
@@ -91,14 +91,14 @@
 
     /* Button styling */
     .action-buttons {
-        margin-bottom: 15px; /* Added for mobile spacing */
+        margin-bottom: 15px;
     }
     .btn-tambah {
         background-color: #ffffff;
         border: 1px solid #ccc;
         color: #333;
         border-radius: 5px;
-        margin-bottom: 5px; /* For stacked mobile buttons */
+        margin-bottom: 5px;
     }
     .btn-tambah:hover {
         background-color: #f0f0f0;
@@ -110,7 +110,7 @@
         border: 1px solid #ccc;
         color: #333;
         border-radius: 5px;
-        margin-bottom: 5px; /* For stacked mobile buttons */
+        margin-bottom: 5px;
     }
     .btn-history:hover {
         background-color: #c0c0c0;
@@ -176,25 +176,6 @@
         padding: 15px;
         margin-bottom: 20px;
         background-color: #1a2526;
-    }
-
-    /* Badge styling */
-    .stock-badge {
-        padding: 5px 8px;
-        border-radius: 4px;
-        font-weight: bold;
-    }
-    .badge-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-    .badge-warning {
-        background-color: #ffc107;
-        color: #212529;
-    }
-    .badge-success {
-        background-color: #28a745;
-        color: white;
     }
 
     /* Responsive adjustments */
@@ -298,13 +279,9 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>Barcode</th>
                                 <th>QR Code</th>
                                 <th>Produk</th>
-                                <th>Kategori</th>
                                 <th>Ukuran</th>
-                                <th>Stok</th>
-                                <th>Harga Beli</th>
                                 <th>Harga Jual</th>
                                 <th>Aksi</th>
                             </tr>
@@ -312,21 +289,9 @@
                         <tbody>
                             @forelse($shoes as $shoe)
                                 <tr>
-                                    <td>{{ $shoe->barcode ?? 'BELUM TERSET' }}</td>
                                     <td class="qr-code">{!! $shoe->qrCode !!}</td>
                                     <td>{{ $shoe->name }}</td>
-                                    <td>Sepatu {{ rand(0, 1) ? 'Lari' : 'Casual' }}</td>
                                     <td>{{ $shoe->size }}</td>
-                                    <td>
-                                        @if($shoe->stock <= 5)
-                                            <span class="stock-badge badge-danger">{{ $shoe->stock }}</span>
-                                        @elseif($shoe->stock >= 10)
-                                            <span class="stock-badge badge-success">{{ $shoe->stock }}</span>
-                                        @else
-                                            <span class="stock-badge badge-warning">{{ $shoe->stock }}</span>
-                                        @endif
-                                    </td>
-                                    <td>Rp {{ number_format($shoe->price * 0.7, 0, ',', '.') }}</td>
                                     <td>Rp {{ number_format($shoe->price, 0, ',', '.') }}</td>
                                     <td>
                                         <div class="table-actions">
@@ -341,7 +306,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center">Belum ada data sepatu.</td>
+                                    <td colspan="5" class="text-center">Belum ada data sepatu.</td>
                                 </tr>
                             @endforelse
                         </tbody>

@@ -21,7 +21,7 @@
         }
         
         .navbar {
-            background-color: #1E1E1E;
+            background-color: #262329; /* Updated to the requested color */
             padding: 10px 20px;
             border-bottom: none;
             margin-bottom: 0;
@@ -73,7 +73,7 @@
             }
             
             .navbar-collapse {
-                background-color: #1E1E1E;
+                background-color: #262329; /* Updated to match the navbar color */
                 padding: 10px;
                 margin-top: 10px;
                 border-radius: 5px;
@@ -137,7 +137,7 @@
                         <a class="nav-link {{ Request::is('shoes*') ? 'active' : '' }}" href="{{ route('shoes.index') }}">Inventory</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('transactions*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">Transaksi</a>
+                        <a class="nav-link {{ Request::is('transactions*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">Kasir</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Laporan</a>

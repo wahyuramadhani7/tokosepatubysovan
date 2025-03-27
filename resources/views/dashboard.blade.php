@@ -5,7 +5,9 @@
 @section('content')
     <!-- Background Banner -->
     <div class="shoe-background d-flex justify-content-center align-items-center">
-        <h3 class="shoe-text">@SEPATUBYSOVAN</h3>
+        <div class="brand-container">
+            <h3 class="brand-text">@SEPATUBYSOVAN</h3>
+        </div>
     </div>
 
     <div class="container mt-4">
@@ -34,6 +36,7 @@
             @endforeach
         </div>
 
+        <!-- Rest of your code remains unchanged -->
         <!-- Charts -->
         <div class="row mb-4">
             <div class="col-lg-4 col-md-6 mb-4">
@@ -109,6 +112,7 @@
 @endsection
 
 @section('scripts')
+    <!-- Your scripts remain unchanged -->
     <script>
         // Chart data
         const chartData = {
@@ -199,7 +203,7 @@
     <style>
         /* Base styles */
         .shoe-background {
-            background-image: url('/images/bgdahsb.png');
+            background-image: url('/images/bgbaru.png');
             background-size: cover;
             background-position: center;
             height: 350px;
@@ -209,13 +213,21 @@
             left: 50%;
         }
         
-        .shoe-text {
-            color: #ffffff;
+        /* Updated brand container and text styling */
+        .brand-container {
+            background-color: #000000;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .brand-text {
+            color: #FF5722;
             font-size: 2rem;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
-            z-index: 1;
+            margin: 0;
         }
 
         /* Stat cards */
@@ -308,12 +320,13 @@
         /* Media queries */
         @media (max-width: 991.98px) {
             .shoe-background { height: 250px; }
-            .shoe-text { font-size: 1.75rem; }
+            .brand-text { font-size: 1.75rem; }
         }
         
         @media (max-width: 767.98px) {
             .shoe-background { height: 200px; }
-            .shoe-text { font-size: 1.5rem; }
+            .brand-text { font-size: 1.5rem; }
+            .brand-container { padding: 12px 20px; }
             .stat-card { height: 130px; }
             .stat-card h5 { font-size: 0.9rem; }
             .stat-card h3 { font-size: 1.3rem; }
@@ -329,7 +342,8 @@
         
         @media (max-width: 575.98px) {
             .shoe-background { height: 150px; }
-            .shoe-text { font-size: 1.25rem; }
+            .brand-text { font-size: 1.25rem; }
+            .brand-container { padding: 10px 15px; }
             h2.text-center { font-size: 1.5rem; }
             .card-body { padding: 15px; }
             .card h5 { font-size: 1rem; }

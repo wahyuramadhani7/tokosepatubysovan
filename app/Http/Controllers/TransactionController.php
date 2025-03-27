@@ -28,18 +28,46 @@ class TransactionController extends Controller
         $barcode = $request->input('barcode');
         Log::info('Attempting to add product with barcode: ' . $barcode);
 
+        // Coba bersihkan barcode dari karakter spesial yang mungkin terbawa dari QR code
+        $barcode = trim($barcode);
+        
+        // Debug log untuk memastikan barcode yang dikirim
+        Log::info('Processed barcode: ' . $barcode);
+
+        // Coba cari sepatu berdasarkan barcode
         $shoe = Shoe::where('barcode', $barcode)->first();
 
+        // Jika tidak ditemukan, coba cari dengan berbagai alternatif
         if (!$shoe) {
-            Log::error('Product not found for barcode: ' . $barcode);
-            return redirect()->back()->with('error', 'Produk tidak ditemukan! Pastikan barcode benar.');
+            Log::warning('Shoe not found with exact barcode. Trying alternative search methods.');
+            
+            // Coba cari dengan LIKE query jika barcode mengandung spasi atau karakter khusus
+            $shoe = Shoe::where('barcode', 'LIKE', "%{$barcode}%")->first();
+            
+            // Jika masih tidak ditemukan, dan barcode terlihat seperti URL atau teks panjang,
+            // coba ekstrak angka saja (asumsi barcode biasanya angka)
+            if (!$shoe && strlen($barcode) > 20) {
+                $numericOnly = preg_replace('/[^0-9]/', '', $barcode);
+                if (strlen($numericOnly) > 0) {
+                    Log::info('Trying with numeric-only: ' . $numericOnly);
+                    $shoe = Shoe::where('barcode', 'LIKE', "%{$numericOnly}%")->first();
+                }
+            }
         }
 
+        // Jika masih tidak ditemukan, tampilkan pesan error
+        if (!$shoe) {
+            Log::error('Product not found for barcode: ' . $barcode);
+            return redirect()->back()->with('error', 'Produk tidak ditemukan! Pastikan QR code atau barcode valid. Kode yang di-scan: ' . $barcode);
+        }
+
+        // Cek stok
         if ($shoe->stock <= 0) {
             Log::error('Product out of stock for barcode: ' . $barcode);
             return redirect()->back()->with('error', 'Stok produk habis!');
         }
 
+        // Proses penambahan ke keranjang
         $cart = session()->get('cart', []);
 
         if (isset($cart[$shoe->id])) {
